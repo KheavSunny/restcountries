@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "@vue/runtime-core";
-import store from '../store';
+import store from "../store";
 
 const theads = [
   "ID",
@@ -13,10 +13,9 @@ const theads = [
   "Country Calling Code",
 ];
 
-store.dispatch('getCountries');
+store.dispatch("getCountries");
 
 const countries = computed(() => store.state.countries);
-
 </script>
 
 <template>
@@ -31,15 +30,15 @@ const countries = computed(() => store.state.countries);
         <tr v-for="(country, index) in countries" :key="index">
           <td>{{ index + 1 }}</td>
           <td>
-            <img :src="country.flags.png" alt="">
+            <img :src="country.flags.png" alt="" />
           </td>
           <td>{{ country.name.official }}</td>
           <td>{{ country.cca2 }}</td>
           <td>{{ country.cca3 }}</td>
           <td></td>
           <td>
-            <p v-for="(value,index) in country.altSpellings">
-              {{index}}. {{ value }}
+            <p v-for="(value, index) in country.altSpellings" :key="index">
+              {{ index }}. {{ value }}
             </p>
           </td>
           <td>
@@ -52,7 +51,7 @@ const countries = computed(() => store.state.countries);
 </template>
 
 <style scoped>
-  img {
-    width: 100px;
-  }
+img {
+  width: 100px;
+}
 </style>
