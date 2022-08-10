@@ -24,7 +24,7 @@ const countries = computed(() => store.state.countries);
     <table class="table w-full">
       <thead>
         <tr>
-          <th v-for="thead in theads" :key="thead.id">{{ thead }}</th>
+          <th v-for="thead in theads" :key="thead">{{ thead }}</th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +36,15 @@ const countries = computed(() => store.state.countries);
           <td>{{ country.name.official }}</td>
           <td>{{ country.cca2 }}</td>
           <td>{{ country.cca3 }}</td>
+          <td></td>
+          <td>
+            <p v-for="(value,index) in country.altSpellings">
+              {{index}}. {{ value }}
+            </p>
+          </td>
+          <td>
+            {{ country.idd.root }}
+          </td>
         </tr>
       </tbody>
     </table>
