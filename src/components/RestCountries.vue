@@ -35,7 +35,7 @@ const countries = computed(() => store.state.countries);
           <td>{{ country.name.official }}</td>
           <td>{{ country.cca2 }}</td>
           <td>{{ country.cca3 }}</td>
-          <td></td>
+          <td>{{ country.name.nativeName?.zho?.official }}</td>
           <td>
             <p v-for="(value, index) in country.altSpellings" :key="index">
               {{ index }}. {{ value }}
