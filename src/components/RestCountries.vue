@@ -24,23 +24,58 @@ const state = reactive({
   countries: computed(() => store.state.countries),
 });
 
-const filterCountries = computed(() => {
+let filterCountries = computed(() => {
   return state.countries.filter((country) =>
-    country.name.official
-      .toLowerCase()
-      .includes(state.search.toLowerCase())
+    country.name.official.toLowerCase().includes(state.search.toLowerCase())
   );
 });
+
+function sortAsc() {
+  function compare(a,b) {
+    if(a.name.official < b.name.official){
+      return -1;
+    }
+    if(a.name.official > b.name.official){
+      return 1;
+    }
+      return 0;
+  }
+
+  return state.countries.sort(compare);
+}
+function sortDesc() {
+  function compare(a,b) {
+    if(a.name.official < b.name.official){
+      return 1;
+    }
+    if(a.name.official > b.name.official){
+      return -1;
+    }
+      return 0;
+  }
+
+  return state.countries.sort(compare);
+}
 </script>
 
 <template>
   <div class="overflow-x-auto">
-    <input
-      type="text"
-      placeholder="Search By Country Name"
-      class="input w-full max-w-xs"
-      v-model="state.search"
-    />
+    <div>
+      <input
+        type="text"
+        placeholder="Search By Country Name"
+        class="input w-full max-w-xs"
+        v-model="state.search"
+      />
+    </div>
+    <div class="mt-2 flex justify-start">
+      <button class="btn mr-2" @click="sortAsc()">
+        Sorting Country By Name Asc
+      </button>
+      <button class="btn" @click="sortDesc()">
+        Sorting Country By Name Desc
+      </button>
+    </div>
     <table class="table table-compact w-auto mt-5">
       <thead>
         <tr>
