@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive } from "@vue/runtime-core";
+import { computed, reactive, ref } from "@vue/runtime-core";
 import store from "../store";
 
 const theads = [
@@ -18,6 +18,16 @@ store.dispatch("getCountries");
 // const search = "";
 
 // const countries = computed(() => store.state.countries);
+
+let start = ref(0);
+let end = ref(25);
+
+function clickPage(st, en) {
+  start.value = st;
+  end.value = en;
+  console.log(start.value);
+  
+}
 
 const state = reactive({
   search: "",
@@ -83,7 +93,10 @@ function sortDesc() {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(country, index) in filterCountries" :key="index">
+        <tr
+          v-for="(country, index) in filterCountries.slice(start, end)"
+          :key="index"
+        >
           <td>{{ index + 1 }}</td>
           <td>
             <img :src="country.flags.png" alt="" />
@@ -108,14 +121,17 @@ function sortDesc() {
           <div class="modal" :id="'my-modal' + index">
             <div class="modal-box">
               <h3 class="font-bold text-lg">
-                Capital Name and Region Of The Country {{ country.name.official }}
+                Capital Name and Region Of The Country
+                {{ country.name.official }}
               </h3>
-              <p class="py-4" v-for="(capital, index) in country.capital" :key="index">
+              <p
+                class="py-4"
+                v-for="(capital, index) in country.capital"
+                :key="index"
+              >
                 Capital: {{ index + 1 }}. {{ capital }}
               </p>
-              <p class="py-4">
-                Region: {{ country.region }}
-              </p>
+              <p class="py-4">Region: {{ country.region }}</p>
               <div class="modal-action">
                 <a href="#" class="btn">Close</a>
               </div>
@@ -124,6 +140,18 @@ function sortDesc() {
         </tr>
       </tbody>
     </table>
+    <div class="btn-group mt-5 mb-5 flex justify-center">
+      <button type="button" class="btn" :class="start==0 ? 'btn-active' : ''" @click="clickPage(0,25)">1</button>
+      <button type="button" class="btn" :class="start==25 ? 'btn-active' : ''" @click="clickPage(25,50)">2</button>
+      <button type="button" class="btn" :class="start==50 ? 'btn-active' : ''" @click="clickPage(50,75)">3</button>
+      <button type="button" class="btn" :class="start==75 ? 'btn-active' : ''" @click="clickPage(75,100)">4</button>
+      <button type="button" class="btn" :class="start==100 ? 'btn-active' : ''" @click="clickPage(100,125)">5</button>
+      <button type="button" class="btn" :class="start==125 ? 'btn-active' : ''" @click="clickPage(125,150)">6</button>
+      <button type="button" class="btn" :class="start==150 ? 'btn-active' : ''" @click="clickPage(150,175)">7</button>
+      <button type="button" class="btn" :class="start==175 ? 'btn-active' : ''" @click="clickPage(175,200)">8</button>
+      <button type="button" class="btn" :class="start==200 ? 'btn-active' : ''" @click="clickPage(200,225)">9</button>
+      <button type="button" class="btn" :class="start==225 ? 'btn-active' : ''" @click="clickPage(225,250)">10</button>
+    </div>
   </div>
 </template>
 
