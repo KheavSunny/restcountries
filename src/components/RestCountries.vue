@@ -31,27 +31,27 @@ let filterCountries = computed(() => {
 });
 
 function sortAsc() {
-  function compare(a,b) {
-    if(a.name.official < b.name.official){
+  function compare(a, b) {
+    if (a.name.official < b.name.official) {
       return -1;
     }
-    if(a.name.official > b.name.official){
+    if (a.name.official > b.name.official) {
       return 1;
     }
-      return 0;
+    return 0;
   }
 
   return state.countries.sort(compare);
 }
 function sortDesc() {
-  function compare(a,b) {
-    if(a.name.official < b.name.official){
+  function compare(a, b) {
+    if (a.name.official < b.name.official) {
       return 1;
     }
-    if(a.name.official > b.name.official){
+    if (a.name.official > b.name.official) {
       return -1;
     }
-      return 0;
+    return 0;
   }
 
   return state.countries.sort(compare);
@@ -88,7 +88,9 @@ function sortDesc() {
           <td>
             <img :src="country.flags.png" alt="" />
           </td>
-          <td>{{ country.name.official }}</td>
+          <td>
+            <a :href="'#my-modal' + index">{{ country.name.official }}</a>
+          </td>
           <td>{{ country.cca2 }}</td>
           <td>{{ country.cca3 }}</td>
           <td>{{ country.name.nativeName?.zho?.official }}</td>
@@ -100,6 +102,25 @@ function sortDesc() {
           <td>
             {{ country.idd.root }}
           </td>
+
+          <!-- Modal Popup -->
+
+          <div class="modal" :id="'my-modal' + index">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">
+                Capital Name and Region Of The Country {{ country.name.official }}
+              </h3>
+              <p class="py-4" v-for="(capital, index) in country.capital" :key="index">
+                Capital: {{ index + 1 }}. {{ capital }}
+              </p>
+              <p class="py-4">
+                Region: {{ country.region }}
+              </p>
+              <div class="modal-action">
+                <a href="#" class="btn">Close</a>
+              </div>
+            </div>
+          </div>
         </tr>
       </tbody>
     </table>
