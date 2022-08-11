@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "@vue/runtime-core";
+import { computed, reactive } from "@vue/runtime-core";
 import store from "../store";
 
 const theads = [
@@ -15,19 +15,40 @@ const theads = [
 
 store.dispatch("getCountries");
 
-const countries = computed(() => store.state.countries);
+// const search = "";
+
+// const countries = computed(() => store.state.countries);
+
+const state = reactive({
+  search: "",
+  countries: computed(() => store.state.countries),
+});
+
+const filterCountries = computed(() => {
+  return state.countries.filter((country) =>
+    country.name.official
+      .toLowerCase()
+      .includes(state.search.toLowerCase())
+  );
+});
 </script>
 
 <template>
   <div class="overflow-x-auto">
-    <table class="table w-full">
+    <input
+      type="text"
+      placeholder="Search By Country Name"
+      class="input w-full max-w-xs"
+      v-model="state.search"
+    />
+    <table class="table table-compact w-auto mt-5">
       <thead>
         <tr>
           <th v-for="thead in theads" :key="thead">{{ thead }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(country, index) in countries" :key="index">
+        <tr v-for="(country, index) in filterCountries" :key="index">
           <td>{{ index + 1 }}</td>
           <td>
             <img :src="country.flags.png" alt="" />
