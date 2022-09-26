@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "@vue/runtime-core";
-import store from "../store";
+import store from '../store';
 
 let theads = [
   "Flags",
@@ -32,7 +32,7 @@ const state = reactive({
 });
 
 let filterCountries = computed(() => {
-  return state.countries.filter((country: string) =>
+  return state.countries.filter((country: any) =>
     country.name.official.toLowerCase().includes(state.search.toLowerCase())
   );
 });
@@ -56,7 +56,7 @@ watch(
 );
 
 function sortAsc() {
-  function compare(a, b) {
+  function compare(a: any, b: any) {
     if (a.name.official < b.name.official) {
       return -1;
     }
@@ -69,7 +69,7 @@ function sortAsc() {
   return state.countries.sort(compare);
 }
 function sortDesc() {
-  function compare(a, b) {
+  function compare(a: any, b: any) {
     if (a.name.official < b.name.official) {
       return 1;
     }
