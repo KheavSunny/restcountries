@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from "@vue/runtime-core";
+import { computed, onMounted, reactive, ref, watch } from "@vue/runtime-core";
 import store from "../store";
 
-const theads = [
-  "ID",
+let theads = [
   "Flags",
   "Country Name",
   "CCA2",
@@ -13,20 +12,18 @@ const theads = [
   "Country Calling Code",
 ];
 
-store.dispatch("getCountries");
+onMounted(async () => {
+  await store.dispatch("getCountries");
+});
 
-// const search = "";
+const paginationData = reactive({
+  start: 0,
+  end: 25,
+});
 
-// const countries = computed(() => store.state.countries);
-
-let start = ref(0);
-let end = ref(25);
-
-function clickPage(st, en) {
-  start.value = st;
-  end.value = en;
-  console.log(start.value);
-  
+function clickPage(st: number, en: number) {
+  paginationData.start = st;
+  paginationData.end = en;
 }
 
 const state = reactive({
@@ -35,10 +32,28 @@ const state = reactive({
 });
 
 let filterCountries = computed(() => {
-  return state.countries.filter((country) =>
+  return state.countries.filter((country: string) =>
     country.name.official.toLowerCase().includes(state.search.toLowerCase())
   );
 });
+
+const paginatedCountries = computed(() =>
+  filterCountries.value.slice(paginationData.start, paginationData.end)
+);
+
+const totalPageCount = computed(() =>
+  paginatedCountries.value.length > 0
+    ? Math.ceil(filterCountries.value.length / 25)
+    : 0
+);
+
+watch(
+  () => state.search,
+  () => {
+    paginationData.start = 0;
+    paginationData.end = 25;
+  }
+);
 
 function sortAsc() {
   function compare(a, b) {
@@ -86,18 +101,14 @@ function sortDesc() {
         Sorting Country By Name Desc
       </button>
     </div>
-    <table class="table table-compact w-auto mt-5">
+    <table class="table table-fixed mt-5">
       <thead>
         <tr>
-          <th v-for="thead in theads" :key="thead">{{ thead }}</th>
+          <th class=" w-1/2 px-4 py-2" v-for="thead in theads" :key="thead">{{ thead }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="(country, index) in filterCountries.slice(start, end)"
-          :key="index"
-        >
-          <td>{{ index + 1 }}</td>
+        <tr v-for="(country, index) in paginatedCountries" :key="index">
           <td>
             <img :src="country.flags.png" alt="" />
           </td>
@@ -141,16 +152,19 @@ function sortDesc() {
       </tbody>
     </table>
     <div class="btn-group mt-5 mb-5 flex justify-center">
-      <button type="button" class="btn" :class="start==0 ? 'btn-active' : ''" @click="clickPage(0,25)">1</button>
-      <button type="button" class="btn" :class="start==25 ? 'btn-active' : ''" @click="clickPage(25,50)">2</button>
-      <button type="button" class="btn" :class="start==50 ? 'btn-active' : ''" @click="clickPage(50,75)">3</button>
-      <button type="button" class="btn" :class="start==75 ? 'btn-active' : ''" @click="clickPage(75,100)">4</button>
-      <button type="button" class="btn" :class="start==100 ? 'btn-active' : ''" @click="clickPage(100,125)">5</button>
-      <button type="button" class="btn" :class="start==125 ? 'btn-active' : ''" @click="clickPage(125,150)">6</button>
-      <button type="button" class="btn" :class="start==150 ? 'btn-active' : ''" @click="clickPage(150,175)">7</button>
-      <button type="button" class="btn" :class="start==175 ? 'btn-active' : ''" @click="clickPage(175,200)">8</button>
-      <button type="button" class="btn" :class="start==200 ? 'btn-active' : ''" @click="clickPage(200,225)">9</button>
-      <button type="button" class="btn" :class="start==225 ? 'btn-active' : ''" @click="clickPage(225,250)">10</button>
+      <button
+        type="button"
+        class="btn"
+        :class="
+          paginationData.start == (c === 1 ? 0 : (c - 1) * 25)
+            ? 'btn-active'
+            : ''
+        "
+        v-for="c in totalPageCount" :key="c"
+        @click="clickPage(c === 1 ? 0 : (c - 1) * 25, c * 25)"
+      >
+        {{ c }}
+      </button>
     </div>
   </div>
 </template>
