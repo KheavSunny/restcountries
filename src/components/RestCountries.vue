@@ -16,6 +16,7 @@ onMounted(async () => {
   await store.dispatch("getCountries");
 });
 
+
 const paginationData = reactive({
   start: 0,
   end: 25,
